@@ -10,7 +10,7 @@ class DatabaseService {
   final CollectionReference groupCollection =
       FirebaseFirestore.instance.collection('groups');
 
-  DatabaseService({ this.uid});
+  DatabaseService({this.uid});
 
   //saving the userdata
   Future savingUserData(String fullName, String email) async {
@@ -73,5 +73,10 @@ class DatabaseService {
     DocumentReference d = groupCollection.doc(groupId);
     DocumentSnapshot documentSnapshot = await d.get();
     return documentSnapshot['admin'];
+  }
+
+  //getGroupMembers
+  getGroupMembers(groupId) async {
+    return groupCollection.doc(groupId).snapshots();
   }
 }
