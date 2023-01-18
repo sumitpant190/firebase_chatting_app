@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
-  final String uid;
+  final String? uid;
 
   //reference for our collections
   final CollectionReference userCollection =
@@ -10,7 +10,7 @@ class DatabaseService {
   final CollectionReference groupCollection =
       FirebaseFirestore.instance.collection('groups');
 
-  DatabaseService({required this.uid});
+  DatabaseService({ this.uid});
 
   //saving the userdata
   Future savingUserData(String fullName, String email) async {
@@ -52,9 +52,26 @@ class DatabaseService {
       'groupId': groupDocumentReference.id
     });
 
-    DocumentReference userDocumentReference =  userCollection.doc(uid);
+    DocumentReference userDocumentReference = userCollection.doc(uid);
     return await userDocumentReference.update({
-      'groups': FieldValue.arrayUnion(['${groupDocumentReference.id}_$groupName'])
+      'groups':
+          FieldValue.arrayUnion(['${groupDocumentReference.id}_$groupName'])
     });
+  }
+
+  //getting the chat\
+  getChats(String groupId) async {
+    return groupCollection
+        .doc(groupId)
+        .collection('messages')
+        .orderBy('time')
+        .snapshots();
+  }
+
+  //getGroupAdmin
+  Future getGroupAdmin(String groupId) async {
+    DocumentReference d = groupCollection.doc(groupId);
+    DocumentSnapshot documentSnapshot = await d.get();
+    return documentSnapshot['admin'];
   }
 }
