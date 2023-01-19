@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_chatting_app/pages/home_page.dart';
 import 'package:firebase_chatting_app/service/database_services.dart';
+import 'package:firebase_chatting_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class GroupInfo extends StatefulWidget {
@@ -51,7 +53,49 @@ class _GroupInfoState extends State<GroupInfo> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.exit_to_app))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Exit'),
+                        content: const Text(
+                            'Are you sure you want to exit the group?'),
+                        actions: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                              )),
+                          IconButton(
+                              onPressed: () async {
+                                DatabaseService(
+                                        uid: FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                    .toggleGroupJoin(
+                                        widget.groupId,
+                                        getName(widget.adminName),
+                                        widget.groupName)
+                                    .whenComplete(() {
+                                  nextScreenReplace(context, const HomePage());
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.done,
+                                color: Colors.green,
+                              ))
+                        ],
+                      );
+                    });
+              },
+              icon: Icon(Icons.exit_to_app))
+        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
