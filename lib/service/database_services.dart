@@ -125,4 +125,14 @@ class DatabaseService {
       });
     }
   }
+
+  //send message
+  sendMessage(String groupId, Map<String, dynamic> chatMesssageData) async {
+    groupCollection.doc(groupId).collection('messages').add(chatMesssageData);
+    groupCollection.doc(groupId).update({
+      'recentMessage': chatMesssageData['message'],
+      'recentMessageSender' : chatMesssageData['sender'],
+      'rescentMessageTime' : chatMesssageData['time'].toString(),
+    });
+  }
 }
