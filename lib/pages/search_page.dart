@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_chatting_app/helper/helper_function.dart';
+import 'package:firebase_chatting_app/pages/chat_page.dart';
 import 'package:firebase_chatting_app/service/database_services.dart';
-import 'package:firebase_chatting_app/widgets/group_tile.dart';
+import 'package:firebase_chatting_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
@@ -163,7 +164,31 @@ class _SearchPageState extends State<SearchPage> {
         'Admin: ${getName(admin)}',
       ),
       trailing: InkWell(
-        onTap: () async {},
+        onTap: () async {
+          await DatabaseService(uid: user!.uid)
+              .toggleGroupJoin(groupId, userName, groupName);
+          if (isJoined) {
+            setState(() {
+              isJoined = !isJoined;
+            });
+            showSnackBar(
+                context, Colors.green, 'Successfully joined the group');
+            Future.delayed(const Duration(seconds: 2), () {
+              nextScreen(
+                  context,
+                  ChatPage(
+                      groupId: groupId,
+                      groupName: groupName,
+                      userName: userName));
+            });
+          } else {
+            setState(() {
+              isJoined = !isJoined;
+            });
+            showSnackBar(context, Colors.red, 'Left the group $groupName');
+            Future.delayed(const Duration(seconds: 1));
+          }
+        },
         child: isJoined
             ? Container(
                 decoration: BoxDecoration(
@@ -183,7 +208,7 @@ class _SearchPageState extends State<SearchPage> {
                     border: Border.all(color: Colors.white, width: 1)),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: const Text(
-                  'Join',
+                  'Join Now',
                   style: TextStyle(color: Colors.white),
                 ),
               ),

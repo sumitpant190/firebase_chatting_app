@@ -1,7 +1,6 @@
 import 'package:firebase_chatting_app/pages/chat_page.dart';
 import 'package:firebase_chatting_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
 
 class GroupTile extends StatefulWidget {
   final String userName;
@@ -31,7 +30,7 @@ class _GroupTileState extends State<GroupTile> {
                 userName: widget.userName));
       },
       child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           child: ListTile(
             leading: CircleAvatar(
               radius: 30,
